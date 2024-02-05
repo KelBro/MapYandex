@@ -18,9 +18,14 @@ class Example(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('design.ui', self)
-
+        self.point_lon, self.point_lat, full_address = self.get_lonlat(
+            'Владивосток')
+        self.x = y
+        self.y = x
+        self.scale = scale
         self.btn_plus.clicked.connect(self.plus)
         self.btn_minus.clicked.connect(self.minus)
+        self.search_btn.clicked.connect(self.search)
         self.btn_scheme.clicked.connect(self.change_view)
         self.btn_satellite.clicked.connect(self.change_view)
         self.btn_hybrid.clicked.connect(self.change_view)
@@ -28,7 +33,7 @@ class Example(QMainWindow):
         self.initUI()
 
     def getImage(self):
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&z={scale}&l={view}"
+        map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.x},{self.y}&spn={self.scale},{self.scale}&l={view}"
         response = requests.get(map_request)
 
         if not response:
@@ -71,6 +76,42 @@ class Example(QMainWindow):
             self.pixmap = QPixmap(self.map_file)
 
             self.image.setPixmap(self.pixmap)
+
+    def search(self, event):
+        search_text = self.lineEdit.text().lower()
+        try:
+            lon, lat, full_address = self.get_lonlat(search_text)
+            self.set_full_address(full_address)
+            self.search_text = search_text
+            self.x = lon
+            self.y = lat
+            self.point_lon = lon
+            self.point_lat = lat
+            self.scale = 0.2
+            self.getImage()
+            self.pixmap = QPixmap(self.map_file)
+            self.image.setPixmap(self.pixmap)
+        except Exception:
+            # по запросу ничего не нашлось
+            pass
+        pass
+
+    def get_lonlat(self, search):
+        geocoder_apikey = '06e2c22e-3e27-43ce-8225-d618104b8f10'
+        geocoder_request = f'https://geocode-maps.yandex.ru/1.x?geocode={search}&apikey={geocoder_apikey}&format=json'
+        response = requests.get(geocoder_request)
+        if response:
+            json_response = response.json()
+
+            toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
+
+            pos = toponym['Point']['pos']
+            lon, lat = [float(el) for el in pos.split()]
+            full_address = toponym['metaDataProperty']['GeocoderMetaData']['text']
+            return lon, lat, full_address
+
+    def set_full_address(self, full_address):
+        pass
 
     def keyPressEvent(self, event):
         global x, y
