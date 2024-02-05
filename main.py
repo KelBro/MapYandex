@@ -2,7 +2,7 @@ import os
 import sys
 
 import requests
-from PyQt5 import uic
+from PyQt5 import uic, Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
@@ -61,8 +61,15 @@ class Example(QMainWindow):
             self.pixmap = QPixmap(self.map_file)
             self.image.setPixmap(self.pixmap)
 
+    def keyPressEvent(self, event):
+        if event.key() == 16777238:  # Код клавиши PgUp
+            self.plus()
+        elif event.key() == 16777239:  # Код клавиши PgDown
+            self.minus()
+
     def closeEvent(self, event):
         os.remove(self.map_file)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
