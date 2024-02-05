@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
 
 SCREEN_SIZE = [600, 450]
-x, y = map(float, '43.125505, 131.888700'.split(', '))
+x, y = map(float, '131.888700, 43.125505'.split(', '))
 scale = 15
 view = 'map'
 k = 0.001
@@ -20,9 +20,6 @@ class Example(QMainWindow):
         uic.loadUi('design.ui', self)
         self.point_lon, self.point_lat, full_address = self.get_lonlat(
             'Владивосток')
-        self.x = y
-        self.y = x
-        self.scale = scale
         self.btn_plus.clicked.connect(self.plus)
         self.btn_minus.clicked.connect(self.minus)
         self.search_btn.clicked.connect(self.search)
@@ -33,7 +30,7 @@ class Example(QMainWindow):
         self.initUI()
 
     def getImage(self):
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.x},{self.y}&spn={self.scale},{self.scale}&l={view}"
+        map_request = f"http://static-maps.yandex.ru/1.x/?ll={x},{y}&z={scale}&l={view}"
         response = requests.get(map_request)
 
         if not response:
@@ -78,16 +75,17 @@ class Example(QMainWindow):
             self.image.setPixmap(self.pixmap)
 
     def search(self, event):
+        global x, y, scale
         search_text = self.lineEdit.text().lower()
         try:
             lon, lat, full_address = self.get_lonlat(search_text)
             self.set_full_address(full_address)
             self.search_text = search_text
-            self.x = lon
-            self.y = lat
+            x = lon
+            y = lat
             self.point_lon = lon
             self.point_lat = lat
-            self.scale = 0.2
+            scale = 17
             self.getImage()
             self.pixmap = QPixmap(self.map_file)
             self.image.setPixmap(self.pixmap)
@@ -120,13 +118,13 @@ class Example(QMainWindow):
         elif event.key() == Qt.Key_PageDown:  # Код клавиши PgDown
             self.minus()
         elif event.key() == Qt.Key_W:
-            x += k
-        elif event.key() == Qt.Key_A:
-            y -= k
-        elif event.key() == Qt.Key_D:
             y += k
-        elif event.key() == Qt.Key_S:
+        elif event.key() == Qt.Key_A:
             x -= k
+        elif event.key() == Qt.Key_D:
+            x += k
+        elif event.key() == Qt.Key_S:
+            y -= k
         if event.key() in [Qt.Key_W, Qt.Key_S, Qt.Key_D, Qt.Key_A]:
             self.getImage()
             self.pixmap = QPixmap(self.map_file)
