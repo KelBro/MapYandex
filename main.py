@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 SCREEN_SIZE = [600, 450]
 x, y = map(float, '43.125505, 131.888700'.split(', '))
 scale = 1
+view = 'map'
 
 
 class Example(QMainWindow):
@@ -16,13 +17,16 @@ class Example(QMainWindow):
         super().__init__()
         uic.loadUi('design.ui', self)
 
-        self.pushButton.clicked.connect(self.plus)
-        self.pushButton_2.clicked.connect(self.minus)
+        self.btn_plus.clicked.connect(self.plus)
+        self.btn_minus.clicked.connect(self.minus)
+        self.btn_scheme.clicked.connect(self.change_view)
+        self.btn_satellite.clicked.connect(self.change_view)
+        self.btn_hybrid.clicked.connect(self.change_view)
         self.getImage()
         self.initUI()
 
     def getImage(self):
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&z={scale}&l=map"
+        map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&z={scale}&l={view}"
         response = requests.get(map_request)
 
         if not response:
@@ -41,6 +45,7 @@ class Example(QMainWindow):
 
         self.pixmap = QPixmap(self.map_file)
         self.image = QLabel(self)
+
         self.image.move(0, 100)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
@@ -50,7 +55,9 @@ class Example(QMainWindow):
         if scale != 21:
             scale += 1
             self.getImage()
+
             self.pixmap = QPixmap(self.map_file)
+
             self.image.setPixmap(self.pixmap)
 
     def minus(self):
@@ -58,7 +65,9 @@ class Example(QMainWindow):
         if scale != 1:
             scale -= 1
             self.getImage()
+
             self.pixmap = QPixmap(self.map_file)
+
             self.image.setPixmap(self.pixmap)
 
     def keyPressEvent(self, event):
@@ -66,6 +75,21 @@ class Example(QMainWindow):
             self.plus()
         elif event.key() == 16777239:  # Код клавиши PgDown
             self.minus()
+
+    def change_view(self):
+        global view
+        button = self.sender()
+        if button == self.btn_scheme:
+            view = 'map'
+        elif button == self.btn_satellite:
+            view = 'sat'
+        elif button == self.btn_hybrid:
+            view = 'sat,skl'
+        self.getImage()
+
+        self.pixmap = QPixmap(self.map_file)
+
+        self.image.setPixmap(self.pixmap)
 
     def closeEvent(self, event):
         os.remove(self.map_file)

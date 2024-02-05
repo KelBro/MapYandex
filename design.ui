@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btn_plus">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -25,14 +25,14 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>15</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>+</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btn_minus">
     <property name="geometry">
      <rect>
       <x>520</x>
@@ -43,11 +43,65 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>15</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_scheme">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>10</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>scheme</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_satellite">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>10</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>satellite</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_hybrid">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>10</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>hybrid</string>
     </property>
    </widget>
   </widget>
