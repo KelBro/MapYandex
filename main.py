@@ -5,11 +5,13 @@ import requests
 from PyQt5 import uic, Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt5.QtCore import Qt
 
 SCREEN_SIZE = [600, 450]
 x, y = map(float, '43.125505, 131.888700'.split(', '))
-scale = 1
+scale = 15
 view = 'map'
+k = 0.001
 
 
 class Example(QMainWindow):
@@ -71,10 +73,23 @@ class Example(QMainWindow):
             self.image.setPixmap(self.pixmap)
 
     def keyPressEvent(self, event):
-        if event.key() == 16777238:  # Код клавиши PgUp
+        global x, y
+        if event.key() == Qt.Key_PageUp:  # Код клавиши PgUp
             self.plus()
-        elif event.key() == 16777239:  # Код клавиши PgDown
+        elif event.key() == Qt.Key_PageDown:  # Код клавиши PgDown
             self.minus()
+        elif event.key() == Qt.Key_W:
+            x += k
+        elif event.key() == Qt.Key_A:
+            y -= k
+        elif event.key() == Qt.Key_D:
+            y += k
+        elif event.key() == Qt.Key_S:
+            x -= k
+        if event.key() in [Qt.Key_W, Qt.Key_S, Qt.Key_D, Qt.Key_A]:
+            self.getImage()
+            self.pixmap = QPixmap(self.map_file)
+            self.image.setPixmap(self.pixmap)
 
     def change_view(self):
         global view
