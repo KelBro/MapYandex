@@ -12,6 +12,9 @@ x, y = map(float, '131.888700, 43.125505'.split(', '))
 scale = 15
 view = 'map'
 k = 0.001
+metka = False
+x_metka = 0
+y_metka = 0
 
 
 class Example(QMainWindow):
@@ -30,7 +33,10 @@ class Example(QMainWindow):
         self.initUI()
 
     def getImage(self):
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={x},{y}&z={scale}&l={view}"
+        if metka:
+            map_request = f'https://static-maps.yandex.ru/1.x/?ll={x},{y}&z={scale}&l={view}&pt={x_metka},{y_metka},pm2rdm'
+        else:
+            map_request = f'https://static-maps.yandex.ru/1.x/?ll={x},{y}&z={scale}&l={view}'
         response = requests.get(map_request)
 
         if not response:
@@ -74,8 +80,8 @@ class Example(QMainWindow):
 
             self.image.setPixmap(self.pixmap)
 
-    def search(self, event):
-        global x, y, scale
+    def search(self):
+        global x, y, scale, x_metka, y_metka, metka
         search_text = self.lineEdit.text().lower()
         try:
             lon, lat, full_address = self.get_lonlat(search_text)
@@ -83,10 +89,13 @@ class Example(QMainWindow):
             self.search_text = search_text
             x = lon
             y = lat
+            metka = True
+            x_metka = lon
+            y_metka = lat
             self.point_lon = lon
             self.point_lat = lat
-            scale = 17
-            self.getImage()
+            scale = 15
+            self.getImage(True)
             self.pixmap = QPixmap(self.map_file)
             self.image.setPixmap(self.pixmap)
         except Exception:
@@ -125,6 +134,9 @@ class Example(QMainWindow):
             x += k
         elif event.key() == Qt.Key_S:
             y -= k
+        elif event.key() == Qt.Key_Return:
+            if self.lineEdit.text().lower():
+                self.search()
         if event.key() in [Qt.Key_W, Qt.Key_S, Qt.Key_D, Qt.Key_A]:
             self.getImage()
             self.pixmap = QPixmap(self.map_file)
