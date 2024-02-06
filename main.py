@@ -95,7 +95,7 @@ class Example(QMainWindow):
             self.point_lon = lon
             self.point_lat = lat
             scale = 15
-            self.getImage(True)
+            self.getImage()
             self.pixmap = QPixmap(self.map_file)
             self.image.setPixmap(self.pixmap)
         except Exception:
